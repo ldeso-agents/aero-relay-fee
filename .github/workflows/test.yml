@@ -1,0 +1,23 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  forge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+      - run: forge --version
+      - run: forge fmt --check
+      - run: forge build --sizes
+      - run: FOUNDRY_PROFILE=ci forge test -vvv
+      - name: upstream pin unchanged
+        run: |
+          echo "d10e57499d9c91795eac315333e39998fcfb9e609b8f52831c49cdc25aeb841c  test/upstream/IRelayEntrypoint.sol" | sha256sum -c
