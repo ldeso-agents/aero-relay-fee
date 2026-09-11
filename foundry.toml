@@ -1,0 +1,39 @@
+[profile.default]
+solc_version = '0.8.36'
+evm_version = 'prague'
+src = 'src'
+test = 'test'
+script = 'script'
+libs = ['lib']
+optimizer = true
+optimizer_runs = 10_000
+# Sourcify and Basescan both match the deployed bytecode against the IPFS metadata hash.
+bytecode_hash = 'ipfs'
+cbor_metadata = true
+auto_detect_remappings = false
+remappings = ['forge-std/=lib/forge-std/src/']
+fs_permissions = []
+
+[fuzz]
+runs = 1000
+
+[profile.ci.fuzz]
+runs = 5000
+
+# Mirrors the upstream metadex-public formatting so the re-declared interface diffs cleanly.
+[fmt]
+line_length = 120
+tab_width = 2
+bracket_spacing = false
+int_types = 'long'
+quote_style = 'single'
+number_underscore = 'thousands'
+multiline_func_header = 'params_first_multi'
+sort_imports = true
+ignore = ['test/upstream/**']
+
+[rpc_endpoints]
+base = "${BASE_RPC_URL}"
+
+[etherscan]
+base = { key = "${BASESCAN_API_KEY}", chain = 8453 }
