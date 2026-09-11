@@ -66,6 +66,7 @@ before deploying.
 ## Build and test
 
 ```sh
+git submodule update --init   # or: forge install foundry-rs/forge-std@v1.16.2
 forge build
 forge test
 FOUNDRY_PROFILE=ci forge test   # 5000 fuzz runs
