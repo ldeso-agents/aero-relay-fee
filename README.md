@@ -26,8 +26,7 @@ skim(relay, token)                              caller must hold KEEPER on the R
   Compounder on what is left. The contract is stateless, so a repeat call skims `FEE_BPS` of the
   remainder again; only the keeper can trigger that.
 - **Immutables.** `FEE_BPS` (1 to `MAX_FEE_BPS` = 1000, i.e. 10%) and `FEE_SINK` are fixed at
-  construction and cannot be changed. Changing either means a new deployment and a new Relay
-  `converter`.
+  construction and cannot be changed.
 - **Least privilege.** The contract is seated with CONVERTER, which authorizes `pull` and
   `notifyReward`. It never calls `notifyReward`.
 - **Nothing stranded.** The whole token balance the contract holds is forwarded on each skim, so
@@ -126,10 +125,8 @@ The Relay is created by Aero through `RelayFactory.createMaxiRelay(CreateParams)
 | `converter` | the `RelayFeeSkim` address from the deploy above |
 
 The Relay grants `converter` the CONVERTER role at initialization (`RelayBase.initialize`), which is
-what lets `RelayFeeSkim` call `pull`. The public grant and revoke paths refuse the COMPOUNDER and
-CONVERTER bits, so replacing the skimmer later (a new fee or sink) goes through the Relay's
-timelocked entrypoint rotation, not a plain role grant. Deploy and hand over the address only after Aero's final code lands: the upstream repo is
-still provisional and the address is bound to this bytecode.
+what lets `RelayFeeSkim` call `pull`. Deploy and hand over the address only after Aero's final
+code lands: the upstream repo is still provisional and the address is bound to this bytecode.
 
 Keeper sequence per reward token: `RelayFeeSkim.skim(relay, token)`, then the Compounder's
 `swapAndCompound` / `compoundIdleBalance` on the rest.

@@ -15,10 +15,15 @@ import {RelayFeeSkim} from '../src/RelayFeeSkim.sol';
 ///         forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 contract Deploy is Script {
   bytes32 public constant SALT = keccak256('aero-relay-fee/RelayFeeSkim/v1');
+  uint256 private constant _MAX_FEE_BPS = 1000; // RelayFeeSkim.MAX_FEE_BPS
 
   function run() external returns (RelayFeeSkim _skim) {
     uint256 _feeBps = vm.envUint('FEE_BPS');
     address _feeSink = vm.envAddress('FEE_SINK');
+    // The CREATE2 deployer swallows constructor revert data, so check the inputs here where the
+    // failure is readable.
+    require(_feeBps != 0 && _feeBps <= _MAX_FEE_BPS, 'FEE_BPS out of range (1..1000)');
+    require(_feeSink != address(0), 'FEE_SINK is zero');
     address _predicted = predict(_feeBps, _feeSink);
     console.log('FEE_BPS  ', _feeBps);
     console.log('FEE_SINK ', _feeSink);

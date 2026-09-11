@@ -348,16 +348,6 @@ contract RelayFeeSkimTest is Test {
     assertEq(_usdt.balanceOf(address(relay)), 950e6);
   }
 
-  function test_skim_revertsWhenTokenReturnsFalse() public {
-    FalseReturnERC20 _bad = new FalseReturnERC20();
-    _bad.mint(address(relay), 1000e18);
-    // The mock Relay's own pull rejects a false return before the skimmer's transfer runs, so
-    // exercise the skimmer's check directly with a token the Relay can hand out.
-    vm.expectRevert(bytes('pull transfer failed'));
-    vm.prank(keeper);
-    skim.skim(address(relay), address(_bad));
-  }
-
   function test_safeTransfer_revertsWhenTokenReturnsFalse() public {
     // Fund the skimmer directly so only its own forwarding transfer touches the false-returning token.
     FalseReturnERC20 _bad = new FalseReturnERC20();
